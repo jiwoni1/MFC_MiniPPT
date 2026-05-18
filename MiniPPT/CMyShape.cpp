@@ -21,3 +21,20 @@ bool CMyShape::PtInShape(CPoint point)
 
 	return false;
 }
+
+// 구조체 멤버 정렬 
+CMyShape::MYSHAPE CMyShape::GetData()
+{
+	MYSHAPE data = { 0 };
+
+	data.x = m_point.x;
+	data.y = m_point.y;
+	data.cx = m_size.cx;
+	data.cy = m_size.cy;
+	data.cbrush = m_cBrush;
+
+	return data;
+
+
+	return MYSHAPE();
+}

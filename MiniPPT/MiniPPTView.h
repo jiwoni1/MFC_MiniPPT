@@ -67,6 +67,8 @@ public:
 	afx_msg void OnUpdateShapeBrushred(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateShapeBrushgreen(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateShapeBrushblue(CCmdUI* pCmdUI);
+	afx_msg void OnMyfileLoad();
+	afx_msg void OnMyfileSave();
 };
 
 #ifndef _DEBUG  // MiniPPTView.cpp의 디버그 버전

@@ -8,6 +8,15 @@ public:
 	CMyShape();
 	~CMyShape();
 
+	struct MYSHAPE {
+		int x;
+		int y;
+		int cx;
+		int cy;
+
+		COLORREF cbrush;
+	};
+
 
 	CPoint m_point;
 	CSize m_size;
@@ -15,5 +24,6 @@ public:
 	COLORREF m_cPen = RGB(0, 50, 75);
 	int m_nPenWidth = 3;
 	bool PtInShape(CPoint point);
+	MYSHAPE GetData();
 };
 

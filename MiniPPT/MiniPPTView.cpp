@@ -40,6 +40,8 @@ BEGIN_MESSAGE_MAP(CMiniPPTView, CView)
 	ON_UPDATE_COMMAND_UI(ID_SHAPE_BRUSHRED, &CMiniPPTView::OnUpdateShapeBrushred)
 	ON_UPDATE_COMMAND_UI(ID_SHAPE_BRUSHGREEN, &CMiniPPTView::OnUpdateShapeBrushgreen)
 	ON_UPDATE_COMMAND_UI(ID_SHAPE_BRUSHBLUE, &CMiniPPTView::OnUpdateShapeBrushblue)
+	ON_COMMAND(ID_MYFILE_LOAD, &CMiniPPTView::OnMyfileLoad)
+	ON_COMMAND(ID_MYFILE_SAVE, &CMiniPPTView::OnMyfileSave)
 END_MESSAGE_MAP()
 
 // CMiniPPTView 생성/소멸
@@ -328,4 +330,53 @@ void CMiniPPTView::OnUpdateShapeBrushblue(CCmdUI* pCmdUI)
 	else {
 		pCmdUI->SetRadio(0);
 	}
+}
+
+void CMiniPPTView::OnMyfileLoad()
+{
+	ReleaseList();
+
+	FILE* fp = NULL;
+	fopen_s(&fp, "test.pptmini", "rb");
+
+	// 읽기
+	CMyShape::MYSHAPE shape = { 0 };
+
+	while (fread(&shape, sizeof(shape), 1, fp)) {
+		CMyShape* pShape = new CMyShape;
+		pShape->m_point = CPoint(shape.x, shape.y);
+		pShape->m_size = CSize(shape.cx, shape.cy);
+		pShape->m_cBrush = shape.cbrush;
+
+		m_listShape.AddTail(pShape);
+	}
+
+	fclose(fp);
+	RedrawWindow();
+}
+
+void CMiniPPTView::OnMyfileSave()
+{
+	FILE* fp = NULL;
+	fopen_s(&fp, "test.pptmini", "wb");
+
+	CMyShape* pShape = NULL;
+
+	POSITION pos = m_listShape.GetHeadPosition();
+
+	while (pos != NULL) {
+		// 주소를 가져와라
+		pShape = (CMyShape*)m_listShape.GetAt(pos);
+
+		// 구조체 형식으로 변환
+		CMyShape::MYSHAPE shape = pShape->GetData();
+
+		fwrite(&shape, sizeof(shape), 1, fp);
+
+
+		// 루프 돌기
+		m_listShape.GetNext(pos);
+	}
+
+	fclose(fp);
 }
