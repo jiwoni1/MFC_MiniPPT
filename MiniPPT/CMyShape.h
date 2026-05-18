@@ -1,5 +1,8 @@
 #pragma once
-class CMyShape
+
+// 상속
+// memory leak이 나는걸 확인하고 싶으면, CObject를 상속받게 해주면 됨
+class CMyShape : public CObject
 {
 public:
 	CMyShape();

@@ -33,6 +33,13 @@ BEGIN_MESSAGE_MAP(CMiniPPTView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOVE()
+	ON_WM_DESTROY()
+	ON_COMMAND(ID_SHAPE_BRUSHRED, &CMiniPPTView::OnShapeBrushred)
+	ON_COMMAND(ID_SHAPE_BRUSHGREEN, &CMiniPPTView::OnShapeBrushgreen)
+	ON_COMMAND(ID_SHAPE_BRUSHBLUE, &CMiniPPTView::OnShapeBrushblue)
+	ON_UPDATE_COMMAND_UI(ID_SHAPE_BRUSHRED, &CMiniPPTView::OnUpdateShapeBrushred)
+	ON_UPDATE_COMMAND_UI(ID_SHAPE_BRUSHGREEN, &CMiniPPTView::OnUpdateShapeBrushgreen)
+	ON_UPDATE_COMMAND_UI(ID_SHAPE_BRUSHBLUE, &CMiniPPTView::OnUpdateShapeBrushblue)
 END_MESSAGE_MAP()
 
 // CMiniPPTView 생성/소멸
@@ -204,6 +211,9 @@ void CMiniPPTView::OnLButtonUp(UINT nFlags, CPoint point)
 	pNewShape->m_size.cx = abs(pNewShape->m_size.cx);
 	pNewShape->m_size.cy = abs(pNewShape->m_size.cy);
 
+	// 색상 넣기(현재 view class의 m_cBrush를 넣기)
+	pNewShape->m_cBrush = this->m_cBrush;
+
 	// 연결리스트
 	m_listShape.AddTail(pNewShape);
 	RedrawWindow();
@@ -242,4 +252,80 @@ CMyShape* CMiniPPTView::PtInShapes(CPoint point)
 	}
 
 	return nullptr;
+}
+
+void CMiniPPTView::ReleaseList()
+{
+	CMyShape* pShape = NULL;
+
+	POSITION pos = m_listShape.GetHeadPosition();
+
+	while (pos != NULL) {
+		// 주소를 가져와라
+		pShape = (CMyShape*)m_listShape.GetAt(pos);
+
+		// delete (new로 생성했던 pShape 객체를 delete)
+		delete pShape;
+
+		// 루프 돌기
+		m_listShape.GetNext(pos);
+	}
+
+	m_listShape.RemoveAll();
+}
+
+// 뷰 객체가 완전히 소멸할 때 호출됨 (윈도우 객체가 사라질 때)
+void CMiniPPTView::OnDestroy()
+{
+	CView::OnDestroy();
+
+	ReleaseList();
+}
+
+void CMiniPPTView::OnShapeBrushred()
+{
+	m_cBrush = RGB(255, 0, 0);
+}
+
+void CMiniPPTView::OnShapeBrushgreen()
+{
+	m_cBrush = RGB(0, 255, 0);
+}
+
+void CMiniPPTView::OnShapeBrushblue()
+{
+	m_cBrush = RGB(0, 0, 255);
+}
+
+void CMiniPPTView::OnUpdateShapeBrushred(CCmdUI* pCmdUI)
+{
+	if (m_cBrush == RGB(255, 0, 0)) {
+	pCmdUI->SetRadio(1);
+
+	}
+	else {
+		pCmdUI->SetRadio(0);
+	}
+}
+
+void CMiniPPTView::OnUpdateShapeBrushgreen(CCmdUI* pCmdUI)
+{
+	if (m_cBrush == RGB(0, 255, 0)) {
+		pCmdUI->SetRadio(1);
+
+	}
+	else {
+		pCmdUI->SetRadio(0);
+	}
+}
+
+void CMiniPPTView::OnUpdateShapeBrushblue(CCmdUI* pCmdUI)
+{
+	if (m_cBrush == RGB(0, 0, 255)) {
+		pCmdUI->SetRadio(1);
+
+	}
+	else {
+		pCmdUI->SetRadio(0);
+	}
 }

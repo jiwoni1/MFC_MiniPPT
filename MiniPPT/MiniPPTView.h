@@ -4,7 +4,7 @@
 
 #pragma once
 
-// 이거 왜 쓰는거지
+// 전방 선언
 class CMyShape;
 
 
@@ -47,6 +47,9 @@ protected:
 
 	CPtrList m_listShape;
 
+	// 선택된 색상
+	COLORREF m_cBrush = RGB(255, 0, 0);
+
 // 생성된 메시지 맵 함수
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -56,6 +59,14 @@ public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMove(int x, int y);
 	CMyShape* PtInShapes(CPoint point);
+	void ReleaseList();
+	afx_msg void OnDestroy();
+	afx_msg void OnShapeBrushred();
+	afx_msg void OnShapeBrushgreen();
+	afx_msg void OnShapeBrushblue();
+	afx_msg void OnUpdateShapeBrushred(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateShapeBrushgreen(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateShapeBrushblue(CCmdUI* pCmdUI);
 };
 
 #ifndef _DEBUG  // MiniPPTView.cpp의 디버그 버전
