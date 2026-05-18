@@ -22,7 +22,7 @@ bool CMyShape::PtInShape(CPoint point)
 	return false;
 }
 
-// 구조체 멤버 정렬 
+// 파일에 저장할 도형 정보를 담는 구조체
 CMyShape::MYSHAPE CMyShape::GetData()
 {
 	MYSHAPE data = { 0 };
@@ -34,7 +34,4 @@ CMyShape::MYSHAPE CMyShape::GetData()
 	data.cbrush = m_cBrush;
 
 	return data;
-
-
-	return MYSHAPE();
 }

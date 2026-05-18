@@ -334,43 +334,66 @@ void CMiniPPTView::OnUpdateShapeBrushblue(CCmdUI* pCmdUI)
 
 void CMiniPPTView::OnMyfileLoad()
 {
+	// 현재 화면에 있던 도형들 전부 삭제
+	// 새로 불러온 도형으로 바꾸기 위해 비우기
 	ReleaseList();
 
 	FILE* fp = NULL;
+	// test.pptmini 파일을 바이너리 읽기 모드로 열기(rb: read binary)
 	fopen_s(&fp, "test.pptmini", "rb");
 
 	// 읽기
+	// 파일에서 읽어온 도형 데이터를 담을 구조체 변수 준비
 	CMyShape::MYSHAPE shape = { 0 };
 
+	// 파일에서 구조체 하나 읽기
 	while (fread(&shape, sizeof(shape), 1, fp)) {
+		// 새 도형 객체 동적 생성
 		CMyShape* pShape = new CMyShape;
+		// 파일에서 읽은 x, y 값으로 도형의 시작 위치를 복원
 		pShape->m_point = CPoint(shape.x, shape.y);
 		pShape->m_size = CSize(shape.cx, shape.cy);
 		pShape->m_cBrush = shape.cbrush;
 
+		// 복원한 도형을 도형 리스트의 맨 뒤에 추가
 		m_listShape.AddTail(pShape);
 	}
 
+	// 파일 닫기
 	fclose(fp);
+	// 화면 다시 그리기
 	RedrawWindow();
 }
 
 void CMiniPPTView::OnMyfileSave()
 {
+	// 파일을 가르킬 포인터 (아직 파일 안열었으니 null)
 	FILE* fp = NULL;
+
+	// test.pptmini 파일을 열기
+	// "wb"는 write binary
+	// 바이너리 쓰기 모드
+	// 기존 파일이 있으면 덮어씀
 	fopen_s(&fp, "test.pptmini", "wb");
 
+	// 리스트에서 꺼낸 도형 하나를 가르킬 포인터
 	CMyShape* pShape = NULL;
 
+	// 도형 리스트의 첫번째 위치 가져오기
 	POSITION pos = m_listShape.GetHeadPosition();
 
 	while (pos != NULL) {
-		// 주소를 가져와라
+		// 현재 위치에 있는 도형 객체 꺼내기
 		pShape = (CMyShape*)m_listShape.GetAt(pos);
 
-		// 구조체 형식으로 변환
+		// 도형 객체를 파일 저장용 구조체 형식으로 변환
 		CMyShape::MYSHAPE shape = pShape->GetData();
 
+		// 구조체 하나를 파일에 쓰기
+		// &shape는 저장할 데이터의 주소
+		//	sizeof(shape)는 구조체 하나의 크기
+		//	1은 한 개 저장한다는 뜻
+		//	fp는 저장할 파일
 		fwrite(&shape, sizeof(shape), 1, fp);
 
 
@@ -378,5 +401,6 @@ void CMiniPPTView::OnMyfileSave()
 		m_listShape.GetNext(pos);
 	}
 
+	// 파일 닫기
 	fclose(fp);
 }
