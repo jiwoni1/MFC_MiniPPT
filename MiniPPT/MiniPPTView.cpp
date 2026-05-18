@@ -191,8 +191,18 @@ void CMiniPPTView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	// 새 도형이 생성되어야함
 	CMyShape *pNewShape = new CMyShape;
-	pNewShape->m_point = m_ptBegin;
+	//pNewShape->m_point = m_ptBegin;
+	//pNewShape->m_size = m_ptEnd - m_ptBegin;
+
+	// 끝지점이 시작지점보다 작을 경우 대비
+	pNewShape->m_point.x =
+		(m_ptBegin.x < m_ptEnd.x) ? m_ptBegin.x : m_ptEnd.x;
+	pNewShape->m_point.y =
+		(m_ptBegin.y < m_ptEnd.y) ? m_ptBegin.y : m_ptEnd.y;
+
 	pNewShape->m_size = m_ptEnd - m_ptBegin;
+	pNewShape->m_size.cx = abs(pNewShape->m_size.cx);
+	pNewShape->m_size.cy = abs(pNewShape->m_size.cy);
 
 	// 연결리스트
 	m_listShape.AddTail(pNewShape);
